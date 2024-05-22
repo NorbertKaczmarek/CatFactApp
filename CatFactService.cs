@@ -14,23 +14,32 @@ namespace CatFactApp
 
         public async Task<CatFact> GetCatFactAsync(string url)
         {
-            var response = await httpClient.GetAsync(url);
-
-            if (response is null || response.StatusCode != System.Net.HttpStatusCode.OK)
+            try
             {
-                await Console.Out.WriteLineAsync("CatFact not found.");
-                return null;
+                var response = await httpClient.GetAsync(url);
+
+                if (response is null || response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    await Console.Out.WriteLineAsync("CatFact not found.");
+                    return null;
+                }
+
+                var catFact = await response.Content.ReadFromJsonAsync<CatFact>();
+
+                if (catFact is null)
+                {
+                    await Console.Out.WriteLineAsync("CatFact could not be mapped");
+                    return null;
+                }
+
+                return catFact;
+            }
+            catch (System.Net.Http.HttpRequestException e)
+            {
+                await Console.Out.WriteLineAsync("Invalid url");
             }
 
-            var catFact = await response.Content.ReadFromJsonAsync<CatFact>();
-
-            if (catFact is null)
-            {
-                await Console.Out.WriteLineAsync("CatFact could not be mapped");
-                return null;
-            }
-
-            return catFact;
+            return null;
         }
 
         public async Task SaveCatFactToFileAsync(string path, CatFact catFact)
