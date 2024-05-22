@@ -17,7 +17,6 @@ namespace CatFactApp
 
             if (catFactService != null)
             {
-
                 var catFact = await catFactService.GetCatFactAsync(url);
                 await catFactService.SaveCatFactToFileAsync(fileName, catFact);
             }
