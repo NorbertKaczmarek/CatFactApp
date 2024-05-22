@@ -18,25 +18,21 @@ namespace CatFactApp
             {
                 var response = await httpClient.GetAsync(url);
 
-                if (response is null || response.StatusCode != System.Net.HttpStatusCode.OK)
-                {
-                    await Console.Out.WriteLineAsync("CatFact not found.");
-                    return null;
-                }
+                if (response is null || response.StatusCode != System.Net.HttpStatusCode.OK) throw new Exception("CatFact not found.");
 
                 var catFact = await response.Content.ReadFromJsonAsync<CatFact>();
 
-                if (catFact is null || catFact.Fact is null)
-                {
-                    await Console.Out.WriteLineAsync("CatFact could not be mapped");
-                    return null;
-                }
+                if (catFact is null || catFact.Fact is null) throw new Exception("CatFact could not be mapped.");
 
                 return catFact;
             }
             catch (System.Net.Http.HttpRequestException e)
             {
                 await Console.Out.WriteLineAsync("Invalid url");
+            }
+            catch (Exception e)
+            {
+                await Console.Out.WriteLineAsync(e.ToString());
             }
 
             return null;
