@@ -26,7 +26,7 @@ namespace CatFactApp
 
                 var catFact = await response.Content.ReadFromJsonAsync<CatFact>();
 
-                if (catFact is null)
+                if (catFact is null || catFact.Fact is null)
                 {
                     await Console.Out.WriteLineAsync("CatFact could not be mapped");
                     return null;
